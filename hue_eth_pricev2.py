@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+Program to change Hue lights based on the last 15 minute ETH price change. Best used with crontab and pi
 """
 
 from phue import Bridge
