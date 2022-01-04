@@ -75,7 +75,7 @@ text_body = convert_to_email(data,books)
 def send_email(user, password, text_body):
     sent_from = user
     to = "mattromano88@gmail.com"
-    body = text_body
+    body = text_body.encode('ascii', 'ignore').decode('ascii')
     print(body)
     email_text = """\
     From: %s \r\n
@@ -90,7 +90,12 @@ def send_email(user, password, text_body):
         smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         smtp_server.ehlo()
         smtp_server.login(user, password)
-        smtp_server.sendmail(sent_from, to, email_text)
+        smtp_server.sendmail(
+            sent_from,
+            to, 
+            email_text 
+            #mail_options=('SMTPUTF8')
+        )
         smtp_server.close()
         print("Email sent successfully!")
     except Exception as ex:
