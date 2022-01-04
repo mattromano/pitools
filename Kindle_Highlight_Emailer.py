@@ -2,19 +2,24 @@ import requests
 import datetime
 import pandas as pd
 import json
-import gmail_stuff as gs
+import gmail as gs
 import smtplib
+import random
 
 
 def get_highlights():
     url_key = "https://readwise.io/api/v2/highlights"
     response = []
+    querystring = {
+        "page_size" : 1000
+    }
 
     return requests.get(
         url=url_key,
         headers={
             "Authorization": "Token imQzpdzXmFrWM0z9EjbMteDugRXh3vBFfWkeiObptBmZyBIKVc"
         },
+        params=querystring
     )
 
 
@@ -35,32 +40,49 @@ def get_books():
 
 data = get_highlights()
 books = get_books().json()
-df2 = pd.json_normalize(books, "results", max_level=0)
-df2.to_csv("books.csv")
 
-data = data.json()
-df1 = pd.json_normalize(data, "results", max_level=0)
-df1 = df1.iloc[[4, 9]]
-df1 = df1.merge(df2, left_on="book_id", right_on="id", how="left", indicator=True)
-print(df1)
+def convert_to_email(data,books):
+    df2 = pd.json_normalize(books, "results", max_level=0)
+    
+    data = data.json()
+    df1 = pd.json_normalize(data, "results", max_level=0)
+    df1 = df1[df1['book_id'] != 10962843]
+    random1 = random.randrange(0,len(df1))
+    random2 = random.randrange(0,len(df1))
+    df1 = df1.iloc[[random1, random2]]
+    df1 = df1.merge(
+        df2, 
+        left_on="book_id", 
+        right_on="id", 
+        how="left", 
+        indicator=True)
+    quote1 = df1['text'][0]
+    book1 = df1['title'][0]
+    quote2 = df1['text'][1]
+    book2 = df1['title'][1]
+    BQ = '''
+    Title: {}
+    Quote: {}
 
-df1.to_csv("readwise_export.csv")
+    Title: {}
+    Quote: {}
+    '''.format(book1,quote1,book2,quote2)
+    return BQ
 
+#print(convert_to_email(data,books))
+text_body = convert_to_email(data,books)
 
 def send_email(user, password, text_body):
     sent_from = user
     to = "mattromano88@gmail.com"
-    subject = "Book Name 1 & 2 Quotes for u"
     body = text_body
-
+    print(body)
     email_text = """\
-    From: %s
-    Subject: book1 and book2 for u
-
+    From: %s \r\n
+    Subject: \r\n
     %s
     """ % (
         sent_from,
-        # subject,
         body,
     )
 
@@ -75,4 +97,4 @@ def send_email(user, password, text_body):
         print("Something went wrong….", ex)
 
 
-send_email(gs.gmail_user, gs.gmail_password, "god damn this will be cool if it works")
+send_email(gs.gmail_user, gs.gmail_password, text_body)
