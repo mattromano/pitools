@@ -9,8 +9,8 @@ eth_price= response.json()
 eth_market_data = eth_price['market_data']['price_change_percentage_1h_in_currency']['usd']
 print(type(eth_market_data))
 
-bridge_ip_address = '192.168.1.2'
-b = Bridge(bridge_ip_address)
+#bridge_ip_address = '192.168.1.2'
+#b = Bridge(bridge_ip_address)
 
 
 def access_lights(bridge_ip_address):
