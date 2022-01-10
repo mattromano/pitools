@@ -20,6 +20,7 @@ w = (150, 150, 150)
 g = (0, 255, 0)
 r = (255, 0, 0)
 e = (0, 0, 0)
+O = (0, 0, 0)
 
 up_only_arrow = [
     e,
@@ -86,6 +87,73 @@ up_only_arrow = [
     e,
     e,
     e,
+]
+
+blank = [
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
+    O,
 ]
 
 down_only_arrow = [
@@ -161,21 +229,20 @@ def matrix_display(eth_market_data):
 
     if float(eth_market_data) > 0.0:
         sense.set_pixels(up_only_arrow)
-        sleep(5)
+        sleep(3)
         sense.show_message(
-            "Market is mooning, ETH is up {} % in the hour".format(get_market_data()),
+            "fuck ya, ETH is up {} % in the hour".format(get_market_data()),
             text_colour=[0, 255, 0],
         )
 
     elif float(eth_market_data) < 0.0:
         sense.set_rotation(180)
         sense.set_pixels(down_only_arrow)
-        sleep(5)
-        sense.set_rotation(180)
+        sleep(3)
+        sense.set_pixels(blank)
+        sense.set_rotation(0)
         sense.show_message(
-            "Market is fucked, ETH is down {} % in the past hour".format(
-                get_market_data()
-            ),
+            "FUCK, ETH is down {} % in the past hour".format(get_market_data()),
             text_colour=[255, 0, 0],
         )
 
