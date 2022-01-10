@@ -1,11 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-Program to change Hue lights based on the last 15 minute ETH price change. Best used with crontab and pi
-"""
-
 from phue import Bridge
 import time
+import requests
 
+
+response = requests.get('https://api.coingecko.com/api/v3/coins/ethereum?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false')
+eth_price= response.json()
+#print(eth_price['price_change_percentage_1h_in_currency'])
+eth_market_data = eth_price['market_data']['price_change_percentage_1h_in_currency']['usd']
+print(type(eth_market_data))
 
 bridge_ip_address = '192.168.1.2'
 b = Bridge(bridge_ip_address)
@@ -24,8 +26,8 @@ def market_lights():
         lights[light].hue = 180
         lights[light].saturation = 100
 
-#access_lights(bridge_ip_address)
-#market_lights()
+access_lights(bridge_ip_address)
+market_lights()
 
 def white_lights():
     lights = access_lights(bridge_ip_address)
@@ -33,14 +35,12 @@ def white_lights():
         lights[light].on = True
         lights[light].hue = 25500
         lights[light].saturation = 100
-        
-"""def red_lights():
+
+def lights_on():
     lights = access_lights(bridge_ip_address)
     for light in lights:
         lights[light].on = True
-        lights[light].hue = 180
-        lights[light].saturation = 200"""
-        
+
 def red_lights():
     lights = access_lights(bridge_ip_address)
     count = 0
@@ -65,9 +65,14 @@ def green_lights():
             lights[light].on= False
             count = count + .3
 
+if eth_market_data > 0.0:
+    green_lights()
 
+elif eth_market_data < 0.0:
+   red_lights()
+print(eth_market_data)
 
-red_lights()
-#if __name__ = '__main__':
+lights_on()
+
     
 
