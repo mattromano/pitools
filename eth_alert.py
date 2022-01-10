@@ -1,8 +1,7 @@
-#from typing import Text
-from phue import Bridge
+#!/usr/bin/env python2
 import time
 import requests
-#from sense_hat import SenseHat
+from sense_hat import SenseHat
 
 def get_market_data():
     response = requests.get('https://api.coingecko.com/api/v3/coins/ethereum?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false')
@@ -13,14 +12,21 @@ def get_market_data():
 
 def matrix_display(eth_market_data):
     sense = SenseHat()
-    red_message = sense.show_message(
+    '''red_message = sense.show_message(
         "Market is fucked, ETH is down {} % in the past hour".format(get_market_data()), 
         text_colour =[255,0,0])
     green_message = sense.show_message(
         "Market is mooning, ETH is up {} % in the hour".format(get_market_data()), 
+        text_colour =[0,255,0])'''
+
+    if float(eth_market_data) > 0.0:
+        return sense.show_message(
+        "Market is mooning, ETH is up {} % in the hour".format(get_market_data()), 
         text_colour =[0,255,0])
 
-    if eth_market_data() > 0.0:
-        return green_message
-    elif eth_market_data() < 0.0:
-        return red_message
+    elif float(eth_market_data) < 0.0:
+        return sense.show_message(
+        "Market is fucked, ETH is down {} % in the past hour".format(get_market_data()), 
+        text_colour =[255,0,0])
+
+matrix_display(get_market_data())
