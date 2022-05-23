@@ -56,5 +56,36 @@ def get_job_list():
         'State',
         'fullCountyName',
     ]]
-    df1.to_csv('output')
+    return df1
+
+def new_posting_check(df1):
+    df2 = pd.read_csv('output.csv')
+    df1 = df1.merge(
+        df2,
+        left_on='postingID',
+        right_on = 'postingID',
+        how = 'left',
+        indicator = True
+    )
+    df1 = df1[df1['_merge'] != 'both']
+    df1.to_csv('output2.csv')
+
+def script_email(df1):
+    
+df1 = get_job_list()
+new_posting_check(df1)
+
+# def convert_to_email(df1):
+
+#     quote1 = df1['text'][0]
+#     book1 = df1['title'][0]
+#     quote2 = df1['text'][1]
+#     book2 = df1['title'][1]
+#     BQ = '''
+#     Title: {}
+#     Quote: {}
+#     Title: {}
+#     Quote: {}
+#     '''.format(book1,quote1,book2,quote2)
+#     return BQ
 
