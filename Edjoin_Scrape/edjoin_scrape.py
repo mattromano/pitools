@@ -4,8 +4,12 @@ import urllib.request
 import smtplib
 import gmail as gs
 import json
+import tabulate
 import pandas as pd
 import http.client
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 
 def get_job_list():
@@ -46,9 +50,9 @@ def get_job_list():
     df1 = df1[[
         'postingID',
         'positionTitle',
-        'salaryInfo',
-        'beginningSalary',	
-        'endingSalary',
+        # 'salaryInfo',
+        # 'beginningSalary',	
+        # 'endingSalary',
         'countyName',
         'districtName',
         'city',
@@ -58,6 +62,7 @@ def get_job_list():
         'State',
         'fullCountyName',
     ]]
+
     return df1
 
 def new_posting_check(df1):
@@ -72,41 +77,38 @@ def new_posting_check(df1):
     df1 = df1[df1['_merge'] != 'both']
     df1.to_csv('output2.csv')
 
-def convert_to_email(df1):
+def create_and_send_email(df1):
     new_job_count = len(df1)
-    job_table = df1.to_string()
-    email_body = '''
+    job_table_text = df1.to_string(index = False)
+    job_table_html = df1.to_html()
+    email_body_text = '''
     There are {} new jobs since last refresh.
     
     The new jobs are:
     {}
-    '''.format(new_job_count,job_table)
-    return email_body
+    '''.format(new_job_count,job_table_text)
 
-def send_email(user, password, text_body):
-    sent_from = user
+    email_body_html = job_table_html
+    #email_body = email_body.format(job_table.to_html())
+
+    sent_from = gs.gmail_user
     to = "mattromano88@gmail.com"
-    body = text_body.encode('ascii', 'ignore').decode('ascii')
-    print(body)
-    email_text = """\
-    From: %s \r\n
-    Subject: \r\n
-    %s
-    """ % (
-        sent_from,
-        body,
-    )
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "{} New Edjoin Jobs".format(new_job_count)
+    msg['From'] = sent_from
+    msg['To'] = to
+    text = email_body_text
+    html = job_table_html
 
     try:
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
         smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         smtp_server.ehlo()
-        smtp_server.login(user, password)
-        smtp_server.sendmail(
-            sent_from,
-            to, 
-            email_text 
-            #mail_options=('SMTPUTF8')
-        )
+        smtp_server.login(gs.gmail_user, gs.gmail_password)
+        smtp_server.sendmail(sent_from, to, msg.as_string())
         smtp_server.close()
         print("Email sent successfully!")
     except Exception as ex:
@@ -114,8 +116,6 @@ def send_email(user, password, text_body):
 
 
 
-
 df1 = get_job_list()
 new_posting_check(df1)
-email_body = convert_to_email(df1)
-send_email(gs.gmail_user, gs.gmail_password, email_body)
+email_body = create_and_send_email(df1)
