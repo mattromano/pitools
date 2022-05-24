@@ -95,12 +95,12 @@ def get_job_list():
 def new_posting_check(df1):
     df2 = pd.read_csv('output.csv')
     df2 = df2.rename(
-        columns={'postingID':'id'}
+        columns={'postingID':'p_id'}
     )
     df1 = df1.merge(
         df2,
         left_on='postingID',
-        right_on = 'id',
+        right_on ='p_id',
         how = 'left',
         indicator = True
     )
@@ -136,8 +136,10 @@ def new_posting_check(df1):
         'State_x': 'State',
         'fullCountyName_x': 'Full County Name'}, 
         inplace=True)
-    print(df1.head())
+    #df1.to_csv('output3.csv')
     zip_cords = pd.read_csv('zip_cords.csv')
+    zip_cords['ZIP'] = zip_cords['ZIP'].apply('int64')
+    df1['Zip Code'] = df1['Zip Code'].apply('int64')
     df1 = df1.merge(
         zip_cords,
         left_on='Zip Code',
@@ -145,6 +147,7 @@ def new_posting_check(df1):
         how = 'left',
         indicator = True
    )
+
     df1 = df1[[
         'Posting ID',
         'Title',
@@ -164,8 +167,8 @@ def new_posting_check(df1):
     
 
 
-    df1.to_csv('output.csv', mode = 'a', header = False)
-    df1.to_csv('output2.csv')
+    #df1.to_csv('output.csv')
+    #df1.to_csv('output2.csv')
     
     return df1
 
@@ -212,7 +215,7 @@ def create_and_send_email(df1):
 
 #dist_from_coordinates()
 df1 = get_job_list()
-df1.to_csv('output.csv')
+#df1.to_csv('output.csv')
 df1 = new_posting_check(df1)
-df1.to_csv('output.csv')
-#email_body = create_and_send_email(df1)
+#df1.to_csv('output.csv')
+create_and_send_email(df1)
