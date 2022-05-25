@@ -1,3 +1,4 @@
+from email import header
 from pandas.io import json
 import requests
 import urllib.request
@@ -122,20 +123,39 @@ def new_posting_check(df1):
     ]]
     df1.rename(
         columns={
-        'postingID':'Posting ID',
-        'positionTitle_x': 'Title',
-        'salaryInfo_x': 'Salary Info',
-        'beginningSalary_x': 'Beginning Salary',	
-        'endingSalary_x': 'Ending Salary',
-        'countyName_x': 'County Name',
-        'districtName_x': 'District',
-        'city_x': 'City',
-        'zip_x': 'Zip Code',
-        'numberOpenings_x': '# of openings',
-        'postingInformation_x': 'Posting Info',
+        'postingID': 'postingID',
+        'positionTitle_x': 'positionTitle',
+        'salaryInfo_x': 'salaryInfo',
+        'beginningSalary_x': 'beginningSalary',	
+        'endingSalary_x': 'endingSalary',
+        'countyName_x': 'countyName',
+        'districtName_x': 'districtName' ,
+        'city_x': 'city',
+        'zip_x': 'zip',
+        'numberOpenings_x': 'numberOpenings',
+        'postingInformation_x': 'postingInformation',
         'State_x': 'State',
-        'fullCountyName_x': 'Full County Name'}, 
+        'fullCountyName_x': 'fullCountyName',}, 
         inplace=True)
+    df1.to_csv('output.csv', mode ='a', header=False)
+    df1.rename(
+        columns={
+        'postingID': 'Posting ID',
+        'positionTitle': 'Title',
+        'salaryInfo': 'Salary Info',
+        'beginningSalary': 'Beginning Salary',	
+        'endingSalary': 'Ending Salary',
+        'countyName': 'County Name',
+        'districtName': 'District',
+        'city': 'City',
+        'zip': 'Zip Code',
+        'numberOpenings': '# of openings',
+        'postingInformation': 'Posting Info',
+        'State': 'State',
+        'fullCountyName': 'Full County Name'}, 
+        inplace=True)
+    print(df1.head())
+    df1['Zip Code'] = df1['Zip Code'].str.split('-').str[0]
     #df1.to_csv('output3.csv')
     zip_cords = pd.read_csv('zip_cords.csv')
     zip_cords['ZIP'] = zip_cords['ZIP'].apply('int64')
