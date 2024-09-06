@@ -28,7 +28,7 @@
    - Earn yield on all deposits instantly, which ties into Vertex's liquidation process. In extreme cases, losses may be socialized across the platform.
 
 
-## 2. Flipside Curation
+## 2. Curation
 
 ### Curation Levels
 
