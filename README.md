@@ -17,9 +17,8 @@
    - Automatic risk management transfers margin between open positions to maintain required levels.
    - **Isolated Margin**: Margin is based solely on the liability of an individual position, standard in most DeFi applications.
 
-3. **Edge Sequencer Upgrade**:
-   - Announced on February 14th, this upgrade introduces a synchronous order book liquidity layer that unifies cross-chain liquidity.
-   - The upgraded sequencer matches orders across all chains where a Vertex instance is running.
+3. **Edge Sequencer**:
+   - The sequencer matches orders across all chains where a Vertex instance is running.
    - **How it Works**:
      - If a long position is taken on one chain, it is matched with a short position on another chain. Edge pairs these trades and takes the opposite side of the matched orders.
      - Liquidity between chains is periodically aggregated and settled on the backend.
