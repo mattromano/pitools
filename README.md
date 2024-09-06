@@ -1,36 +1,39 @@
 # Vertex Protocol Overview
 
-### Vertex UI
+## 1. Features
 
-- **User Experience**: 
-  - Similar to centralized exchanges; users send collateral and trade quickly without signing each transaction.
-  - Features one-click trading.
-  - Shared order book across Vertex and Blitz, synchronized across separate L2 chains.
+1. **Hybrid CLOB/AMM Design**:
+   - Vertex combines a Central Limit Order Book (CLOB) and Automated Market Maker (AMM) design.
+   - Most trades are matched via an off-chain sequencer, with a typical matching time of 10-30 milliseconds, providing a latency similar to centralized exchanges (CEXs).
+   - Matched trades are passed to the on-chain risk engine along with deposit/withdrawal instructions, batching over 200 orders into a single transaction.
+     - This approach makes trading cheaper, faster, and resistant to Miner Extractable Value (MEV).
+     - Future plans include decentralizing this layer, essentially creating a "Layer 3" solution.
+   - The AMM serves as a backup, and all liquidations are processed on-chain.
 
-### Main Differentiators
+2. **Cross-Portfolio Margin (Default Setting)**:
+   - Margin is shared across all positions, including perpetuals, spot trades, and liquidity pools.
+   - Creating liquidation events is challenging, even at 20x leverage, due to robust risk management.
+     - Liquidation involves a step-by-step process across different products used for margin.
+   - Automatic risk management transfers margin between open positions to maintain required levels.
+   - **Isolated Margin**: Margin is based solely on the liability of an individual position, standard in most DeFi applications.
 
-#### Edge - Synchronous Liquidity
+3. **Edge Sequencer Upgrade**:
+   - Announced on February 14th, this upgrade introduces a synchronous order book liquidity layer that unifies cross-chain liquidity.
+   - The upgraded sequencer matches orders across all chains where a Vertex instance is running.
+   - **How it Works**:
+     - If a long position is taken on one chain, it is matched with a short position on another chain. Edge pairs these trades and takes the opposite side of the matched orders.
+     - Liquidity between chains is periodically aggregated and settled on the backend.
 
-- **Function**: Allows cross-chain trading by connecting orders via Vertex's sequencer.
-- **Liquidity Management**: Balances trades across chains, solving fragmented liquidity issues.
-- **Current Integration**: Combines liquidity from Arbitrum and Blast, with plans for expansion.
+4. **Integrated Money Market**:
+   - Earn yield on all deposits instantly, which ties into Vertex's liquidation process. In extreme cases, losses may be socialized across the platform.
 
-#### Speed
 
-- **Mission Statement**: "Trade like a centralized exchange, self-custody like a DEX."
-- **Off-Chain Sequencer**: Executes trades in less than 10 ms, matching centralized exchange speed.
-- **Gas Optimization**: Trades are batched and published on-chain, reducing gas costs and minimizing exposure to MEV.
+## 2. Flipside Curation
 
-#### Cross-Portfolio Margin
-
-- **Benefit**: Considers total account value for liquidation risk, unlike other exchanges that assess individual positions.
-
-## Flipside Curation
-
-### Curation Phases
+### Curation Levels
 
 1. **Core Tables**: Include on-chain data essential to Vertex trading.
-2. **Curated Tables**: Provide analytical and aggregate data, such as funding rates and market depth.
+2. **Curated Tables**: Provide analytical and aggregate data, such as funding rates and market depth. Combines both on-chain data with API data.
 
 ### Specific Curation for Blitz on Blast
 
